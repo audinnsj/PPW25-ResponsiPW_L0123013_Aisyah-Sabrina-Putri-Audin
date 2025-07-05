@@ -10,8 +10,9 @@ class AdminMiddleware
     public function handle($request, Closure $next)
     {
         if (!Auth::check() || !Auth::user()->is_admin) {
-            abort(403, 'Akses ditolak');
+            abort(403, 'Unauthorized');
         }
+
         return $next($request);
     }
 }

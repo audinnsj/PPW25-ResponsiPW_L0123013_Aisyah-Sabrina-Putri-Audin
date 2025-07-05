@@ -11,7 +11,7 @@ Route::get('/', [MenuController::class, 'index'])->name('menu.index');
 Auth::routes();
 
 // Semua fitur CRUD hanya untuk yang sudah login
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/menus/create', [MenuController::class, 'create'])->name('menus.create');
     Route::post('/menus', [MenuController::class, 'store'])->name('menus.store');
     Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
