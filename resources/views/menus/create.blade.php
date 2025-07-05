@@ -2,32 +2,48 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4 text-center">Tambah Menu Baru</h2>
+    <h1 class="mb-4">Tambah Menu</h1>
 
-    <form action="{{ route('menus.store') }}" method="POST">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('menus.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
+
         <div class="mb-3">
             <label for="nama_menu" class="form-label">Nama Menu</label>
-            <input type="text" class="form-control" id="nama_menu" name="nama_menu" required>
+            <input type="text" name="nama_menu" class="form-control" value="{{ old('nama_menu') }}" required>
         </div>
 
         <div class="mb-3">
             <label for="kategori" class="form-label">Kategori</label>
-            <input type="text" class="form-control" id="kategori" name="kategori" required>
+            <input type="text" name="kategori" class="form-control" value="{{ old('kategori') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="harga" class="form-label">Harga</label>
+            <input type="number" name="harga" class="form-control" value="{{ old('harga') }}" required>
         </div>
 
         <div class="mb-3">
             <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
+            <textarea name="deskripsi" class="form-control">{{ old('deskripsi') }}</textarea>
         </div>
 
         <div class="mb-3">
-            <label for="harga" class="form-label">Harga (Rp)</label>
-            <input type="number" class="form-control" id="harga" name="harga" required>
+            <label for="gambar" class="form-label">Upload Gambar</label>
+            <input type="file" name="gambar" class="form-control" accept="image/*">
         </div>
 
         <button type="submit" class="btn btn-success">Simpan</button>
-        <a href="{{ url('/') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('menus.index') }}" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 @endsection

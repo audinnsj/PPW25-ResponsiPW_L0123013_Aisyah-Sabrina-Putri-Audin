@@ -29,10 +29,20 @@ class MenuController extends Controller
             'nama_menu' => 'required',
             'kategori' => 'required',
             'harga' => 'required|numeric',
-            'deskripsi' => 'nullable'
+            'deskripsi' => 'nullable',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Menu::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('gambar_menu'), $filename);
+            $data['gambar'] = $filename;
+        }
+
+        Menu::create($data);
 
         return redirect()->route('menus.index')->with('success', 'Menu berhasil ditambahkan.');
     }
@@ -48,16 +58,35 @@ class MenuController extends Controller
             'nama_menu' => 'required',
             'kategori' => 'required',
             'harga' => 'required|numeric',
-            'deskripsi' => 'nullable'
+            'deskripsi' => 'nullable',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $menu->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($menu->gambar && file_exists(public_path('gambar_menu/' . $menu->gambar))) {
+                unlink(public_path('gambar_menu/' . $menu->gambar));
+            }
+
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('gambar_menu'), $filename);
+            $data['gambar'] = $filename;
+        }
+
+        $menu->update($data);
 
         return redirect()->route('menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
 
     public function destroy(Menu $menu)
     {
+        if ($menu->gambar && file_exists(public_path('gambar_menu/' . $menu->gambar))) {
+            unlink(public_path('gambar_menu/' . $menu->gambar));
+        }
+
         $menu->delete();
         return redirect()->route('menus.index')->with('success', 'Menu berhasil dihapus.');
     }
