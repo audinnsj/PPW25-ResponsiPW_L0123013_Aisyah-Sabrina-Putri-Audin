@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MenuController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [MenuController::class, 'index'])->name('home');
+
+// Hanya admin yang bisa akses CRUD
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('menus', MenuController::class)->except(['index']);
 });
 
+// Auth bawaan Laravel
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
