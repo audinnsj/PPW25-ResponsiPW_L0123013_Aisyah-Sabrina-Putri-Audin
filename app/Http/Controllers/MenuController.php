@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    // Hanya admin yang boleh akses semua kecuali index
     public function __construct()
     {
-        $this->middleware('admin')->except(['index']);
+        $this->middleware('auth')->except(['index']);
     }
 
     public function index()
